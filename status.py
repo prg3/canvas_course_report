@@ -102,6 +102,10 @@ data = {"query" : query}
 
 response = requests.post(url=graphQLUrl, headers=headers, data=data)
 
+f = open("graphql.out", "w")
+f.write(json.dumps(response.json()))
+f.close()
+
 if response.status_code == 200:
     for course in response.json()['data']['allCourses']:
         # print(course['courseCode'])
@@ -113,7 +117,10 @@ if response.status_code == 200:
             assignmentId = a['_id']
             assignmentDetail = requests.get(url = baseUrl + "/api/v1/courses/" + courseId + "/assignments/" + assignmentId + "/submissions/" + studentId, headers=headers)
             if assignmentDetail.status_code == 200:
+                f = open(courseId + "-" + assignmentId + ".out", "w")
                 aD = json.loads(assignmentDetail.text)
+                f.write(json.dumps(aD))
+                f.close()
                 # print(aD['workflow_state'])
                 # if "score" in aD.keys():
                 #     print(aD['score'])
